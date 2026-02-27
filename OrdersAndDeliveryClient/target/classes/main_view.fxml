@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox alignment="CENTER" spacing="15.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hit.client.controller.MainController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+
+    <Label text="Add New Customer" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+    <TextField fx:id="customerIdField" promptText="Enter Customer ID" />
+    <TextField fx:id="customerNameField" promptText="Enter Customer Name" />
+
+    <Button text="Save Customer" onAction="#handleSaveCustomer" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;"/>
+
+    <Label fx:id="statusLabel" text="Ready" textFill="BLUE"/>
+</VBox>

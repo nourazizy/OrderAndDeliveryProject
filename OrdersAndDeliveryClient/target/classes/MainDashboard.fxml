@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.effect.DropShadow?>
+
+<TabPane tabClosingPolicy="UNAVAILABLE" style="-fx-background-color: linear-gradient(to bottom right, #fdfbfb, #ebedee); -fx-font-family: 'Segoe UI', sans-serif;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hit.client.controller.DashboardController">
+    <tabs>
+
+        <Tab text="👤 Customers" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-base-color: #2c3e50;">
+            <StackPane>
+                <padding><Insets top="50" right="80" bottom="50" left="80"/></padding>
+                <VBox spacing="25" alignment="CENTER" style="-fx-background-color: white; -fx-background-radius: 25; -fx-padding: 40;">
+                    <effect><DropShadow color="#00000025" radius="25" offsetY="10"/></effect>
+                    <Label text="✨ Manage Customers" style="-fx-font-size: 34px; -fx-font-weight: bold; -fx-text-fill: linear-gradient(to right, #2980b9, #8e44ad);"/>
+
+                    <HBox spacing="20" alignment="CENTER">
+                        <TextField fx:id="custId" promptText="ID (Numbers only)" style="-fx-pref-width: 200; -fx-padding: 12; -fx-background-color: #f8f9fa; -fx-border-color: #dcdde1; -fx-border-radius: 10; -fx-background-radius: 10; -fx-font-size: 15px;"/>
+                        <TextField fx:id="custName" promptText="Full Name" style="-fx-pref-width: 200; -fx-padding: 12; -fx-background-color: #f8f9fa; -fx-border-color: #dcdde1; -fx-border-radius: 10; -fx-background-radius: 10; -fx-font-size: 15px;"/>
+                        <TextField fx:id="custPhone" promptText="Phone Number" style="-fx-pref-width: 200; -fx-padding: 12; -fx-background-color: #f8f9fa; -fx-border-color: #dcdde1; -fx-border-radius: 10; -fx-background-radius: 10; -fx-font-size: 15px;"/>
+                    </HBox>
+                    <HBox spacing="20" alignment="CENTER">
+                        <TextField fx:id="custAddress" promptText="Address" style="-fx-pref-width: 310; -fx-padding: 12; -fx-background-color: #f8f9fa; -fx-border-color: #dcdde1; -fx-border-radius: 10; -fx-background-radius: 10; -fx-font-size: 15px;"/>
+                        <TextField fx:id="custDob" promptText="Date of Birth" style="-fx-pref-width: 310; -fx-padding: 12; -fx-background-color: #f8f9fa; -fx-border-color: #dcdde1; -fx-border-radius: 10; -fx-background-radius: 10; -fx-font-size: 15px;"/>
+                    </HBox>
+
+                    <HBox spacing="15" alignment="CENTER" style="-fx-padding: 20 0 0 0;">
+                        <Button text="Save" onAction="#handleSaveCustomer" style="-fx-background-color: linear-gradient(to right, #11998e, #38ef7d); -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 30; -fx-cursor: hand; -fx-min-width: 80;"/>
+                        <Button text="Find by ID" onAction="#handleFindCustomer" style="-fx-background-color: linear-gradient(to right, #f2994a, #f2c94c); -fx-text-fill: #2c3e50; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 30; -fx-cursor: hand; -fx-min-width: 100;"/>
+                        <Button text="Load All" onAction="#handleLoadCustomers" style="-fx-background-color: linear-gradient(to right, #2980b9, #8e44ad); -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 30; -fx-cursor: hand; -fx-min-width: 90;"/>
+                        <Button text="Delete" onAction="#handleDeleteCustomer" style="-fx-background-color: linear-gradient(to right, #ff416c, #ff4b2b); -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 30; -fx-cursor: hand; -fx-min-width: 80;"/>
+                    </HBox>
+                    <Label fx:id="customerStatus" text="Ready" style="-fx-font-size: 15px; -fx-text-fill: #7f8c8d; -fx-font-style: italic;"/>
+                </VBox>
+            </StackPane>
+        </Tab>
+
+        <Tab text="📦 Products" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-base-color: #2c3e50;">
+            <StackPane>
+                <padding><Insets top="50" right="80" bottom="50" left="80"/></padding>
+                <VBox spacing="25" alignment="CENTER" style="-fx-background-color: white; -fx-background-radius: 25; -fx-padding: 40;">
+                    <effect><DropShadow color="#00000025" radius="25" offsetY="10"/></effect>
+                    <Label text="📦 Manage Products" style="-fx-font-size: 34px; -fx-font-weight: bold; -fx-text-fill: linear-gradient(to right, #2980b9, #8e44ad);"/>
+
+                    <HBox spacing="20" alignment="CENTER">
+                        <TextField fx:id="prodId" promptText="Product Code" style="-fx-pref-width: 200; -fx-padding: 12; -fx-background-color: #f8f9fa; -fx-border-color: #dcdde1; -fx-border-radius: 10; -fx-background-radius: 10; -fx-font-size: 15px;"/>
+                        <TextField fx:id="prodName" promptText="Product Name" style="-fx-pref-width: 200; -fx-padding: 12; -fx-background-color: #f8f9fa; -fx-border-color: #dcdde1; -fx-border-radius: 10; -fx-background-radius: 10; -fx-font-size: 15px;"/>
+                        <TextField fx:id="prodPrice" promptText="Price (₪)" style="-fx-pref-width: 200; -fx-padding: 12; -fx-background-color: #f8f9fa; -fx-border-color: #dcdde1; -fx-border-radius: 10; -fx-background-radius: 10; -fx-font-size: 15px;"/>
+                    </HBox>
+
+                    <HBox spacing="15" alignment="CENTER" style="-fx-padding: 20 0 0 0;">
+                        <Button text="Save" onAction="#handleSaveProduct" style="-fx-background-color: linear-gradient(to right, #11998e, #38ef7d); -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 30; -fx-cursor: hand; -fx-min-width: 80;"/>
+                        <Button text="Find by Code" onAction="#handleFindProduct" style="-fx-background-color: linear-gradient(to right, #f2994a, #f2c94c); -fx-text-fill: #2c3e50; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 30; -fx-cursor: hand; -fx-min-width: 100;"/>
+                        <Button text="Load All" onAction="#handleLoadProducts" style="-fx-background-color: linear-gradient(to right, #2980b9, #8e44ad); -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 30; -fx-cursor: hand; -fx-min-width: 90;"/>
+                        <Button text="Delete" onAction="#handleDeleteProduct" style="-fx-background-color: linear-gradient(to right, #ff416c, #ff4b2b); -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 30; -fx-cursor: hand; -fx-min-width: 80;"/>
+                    </HBox>
+                    <Label fx:id="productStatus" text="Ready" style="-fx-font-size: 15px; -fx-text-fill: #7f8c8d; -fx-font-style: italic;"/>
+                </VBox>
+            </StackPane>
+        </Tab>
+
+        <Tab text="🛒 Orders" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-base-color: #2c3e50;">
+            <StackPane>
+                <padding><Insets top="50" right="80" bottom="50" left="80"/></padding>
+                <VBox spacing="25" alignment="CENTER" style="-fx-background-color: white; -fx-background-radius: 25; -fx-padding: 40;">
+                    <effect><DropShadow color="#00000025" radius="25" offsetY="10"/></effect>
+                    <Label text="🛒 Manage Orders" style="-fx-font-size: 34px; -fx-font-weight: bold; -fx-text-fill: linear-gradient(to right, #2980b9, #8e44ad);"/>
+
+                    <HBox spacing="20" alignment="CENTER">
+                        <TextField fx:id="orderId" promptText="Order ID" style="-fx-pref-width: 250; -fx-padding: 12; -fx-background-color: #f8f9fa; -fx-border-color: #dcdde1; -fx-border-radius: 10; -fx-background-radius: 10; -fx-font-size: 15px;"/>
+                        <TextField fx:id="orderCustomerId" promptText="Customer ID for Order" style="-fx-pref-width: 250; -fx-padding: 12; -fx-background-color: #f8f9fa; -fx-border-color: #dcdde1; -fx-border-radius: 10; -fx-background-radius: 10; -fx-font-size: 15px;"/>
+                    </HBox>
+
+                    <HBox spacing="15" alignment="CENTER" style="-fx-padding: 20 0 0 0;">
+                        <Button text="Save" onAction="#handleSaveOrder" style="-fx-background-color: linear-gradient(to right, #11998e, #38ef7d); -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 30; -fx-cursor: hand; -fx-min-width: 80;"/>
+                        <Button text="Find by ID" onAction="#handleFindOrder" style="-fx-background-color: linear-gradient(to right, #f2994a, #f2c94c); -fx-text-fill: #2c3e50; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 30; -fx-cursor: hand; -fx-min-width: 100;"/>
+                        <Button text="Load All" onAction="#handleLoadOrders" style="-fx-background-color: linear-gradient(to right, #2980b9, #8e44ad); -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 30; -fx-cursor: hand; -fx-min-width: 90;"/>
+                        <Button text="Delete" onAction="#handleDeleteOrder" style="-fx-background-color: linear-gradient(to right, #ff416c, #ff4b2b); -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 30; -fx-cursor: hand; -fx-min-width: 80;"/>
+                    </HBox>
+                    <Label fx:id="orderStatus" text="Ready" style="-fx-font-size: 15px; -fx-text-fill: #7f8c8d; -fx-font-style: italic;"/>
+                </VBox>
+            </StackPane>
+        </Tab>
+
+        <Tab text="🚚 Deliveries &amp; Paths" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-base-color: #2c3e50;">
+            <StackPane>
+                <padding><Insets top="50" right="80" bottom="50" left="80"/></padding>
+                <VBox spacing="25" alignment="CENTER" style="-fx-background-color: white; -fx-background-radius: 25; -fx-padding: 40;">
+                    <effect><DropShadow color="#00000025" radius="25" offsetY="10"/></effect>
+                    <Label text="🚚 Deliveries &amp; Paths" style="-fx-font-size: 34px; -fx-font-weight: bold; -fx-text-fill: linear-gradient(to right, #2980b9, #8e44ad);"/>
+
+                    <HBox spacing="20" alignment="CENTER">
+                        <TextField fx:id="deliveryId" promptText="Order ID" style="-fx-pref-width: 200; -fx-padding: 12; -fx-background-color: #f8f9fa; -fx-border-color: #dcdde1; -fx-border-radius: 10; -fx-background-radius: 10; -fx-font-size: 15px;"/>
+                        <TextField fx:id="storeAddress" promptText="Store Address " style="-fx-pref-width: 250; -fx-padding: 12; -fx-background-color: #f8f9fa; -fx-border-color: #dcdde1; -fx-border-radius: 10; -fx-background-radius: 10; -fx-font-size: 15px;"/>
+                        <TextField fx:id="destAddress" promptText="Dest. Address " style="-fx-pref-width: 250; -fx-padding: 12; -fx-background-color: #f8f9fa; -fx-border-color: #dcdde1; -fx-border-radius: 10; -fx-background-radius: 10; -fx-font-size: 15px;"/>
+                    </HBox>
+
+                    <HBox spacing="15" alignment="CENTER" style="-fx-padding: 20 0 0 0;">
+                        <Button text="Calc Path" onAction="#handleSaveDelivery" style="-fx-background-color: linear-gradient(to right, #11998e, #38ef7d); -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 30; -fx-cursor: hand; -fx-min-width: 90;"/>
+                        <Button text="Find by ID" onAction="#handleFindDelivery" style="-fx-background-color: linear-gradient(to right, #f2994a, #f2c94c); -fx-text-fill: #2c3e50; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 30; -fx-cursor: hand; -fx-min-width: 100;"/>
+                        <Button text="Load All" onAction="#handleLoadDeliveries" style="-fx-background-color: linear-gradient(to right, #2980b9, #8e44ad); -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 30; -fx-cursor: hand; -fx-min-width: 90;"/>
+                        <Button text="Delete" onAction="#handleDeleteDelivery" style="-fx-background-color: linear-gradient(to right, #ff416c, #ff4b2b); -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 30; -fx-cursor: hand; -fx-min-width: 80;"/>
+                    </HBox>
+                    <Label fx:id="deliveryStatus" text="Ready" style="-fx-font-size: 15px; -fx-text-fill: #7f8c8d; -fx-font-style: italic;"/>
+                </VBox>
+            </StackPane>
+        </Tab>
+    </tabs>
+</TabPane>
