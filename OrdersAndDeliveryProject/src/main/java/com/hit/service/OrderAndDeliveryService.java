@@ -140,4 +140,39 @@ public class OrderAndDeliveryService
     {
         return deliveryDao.getAll();
     }
+
+    /* --- Delete Methods --- */
+    public void deleteOrder(Order order) {
+        try { orderDao.delete(order); }
+        catch (IOException e) { System.out.println("Error: " + e.getMessage()); }
+    }
+
+    public void deleteCustomer(Customer customer) {
+        try { customerDao.delete(customer); }
+        catch (IOException e) { System.out.println("Error: " + e.getMessage()); }
+    }
+
+    public void deleteProduct(Product product) {
+        try { productDao.delete(product); }
+        catch (IOException e) { System.out.println("Error: " + e.getMessage()); }
+    }
+
+    public void deleteDelivery(Delivery delivery) {
+        try { deliveryDao.delete(delivery); }
+        catch (IOException e) { System.out.println("Error: " + e.getMessage()); }
+    }
+
+    // --- פונקציות חיפוש ספציפי (Find by ID) ---
+    public Customer getCustomer(long id) {
+        try { return customerDao.find(id); } catch(IOException e) { return null; }
+    }
+    public Product getProduct(long id) {
+        try { return productDao.find(id); } catch(IOException e) { return null; }
+    }
+    public Order getOrder(long id) {
+        try { return orderDao.find(id); } catch(IOException e) { return null; }
+    }
+    public Delivery getDelivery(long id) {
+        try { return deliveryDao.find(id); } catch(IOException e) { return null; }
+    }
 }

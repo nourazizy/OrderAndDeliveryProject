@@ -6,7 +6,7 @@ import java.util.List;
 
 public abstract class AbstractDao<T> implements IDao<T>
 {
-    protected final String filePath; /*the path that will lead us to the file that we need*/
+    protected final String filePath;
     private String fileName;
 
     public AbstractDao(String filePath, String fileName) {
@@ -18,6 +18,8 @@ public abstract class AbstractDao<T> implements IDao<T>
     public List<T> getAll()
     {
         File file = new File(filePath, fileName);
+        if (!file.exists()) return new ArrayList<>(); // אם הקובץ לא קיים, נחזיר רשימה ריקה
+
         try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(file))) {
             return (List<T>) inputStream.readObject();
         } catch (FileNotFoundException e) {
@@ -42,15 +44,24 @@ public abstract class AbstractDao<T> implements IDao<T>
     public void delete(T item) throws IOException
     {
         List<T> list = getAll();
-        if (list.remove(item)) {
+        // במקום להסתמך רק על equals, נשתמש ב-findToRemove שממומש במחלקות היורשות
+        T toRemove = findToRemove(list, item);
+        if (toRemove != null) {
+            list.remove(toRemove);
             saveListToFile(list);
         }
     }
 
-    /*writes all the information that she get in the list to the file*/
+    // מתודה מופשטת חדשה שתעזור לנו למצוא את האובייקט למחיקה מתוך הרשימה
+    protected abstract T findToRemove(List<T> list, T item);
+
     private void saveListToFile(List<T> list) throws IOException
     {
         File file = new File(filePath, fileName);
+        // יצירת תיקיות אם הן לא קיימות
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
         try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file))) {
             outputStream.writeObject(list);
         }

@@ -2,12 +2,18 @@ package main.java.com.hit.server;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import main.java.com.hit.controller.*;
+import main.java.com.hit.dm.*;
+
 import java.io.*;
+import java.lang.reflect.Type;
 import java.net.Socket;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
 public class HandleRequest implements Runnable {
+
     private Socket clientSocket;
     private Gson gson;
 
@@ -18,46 +24,143 @@ public class HandleRequest implements Runnable {
 
     @Override
     public void run() {
-        // שימוש ב-Decorators (Data Stream ו-Buffered) בדיוק לפי עמוד 18 ב-PDF של ניסים
-        try (DataInputStream reader = new DataInputStream(new BufferedInputStream(clientSocket.getInputStream()));
-             DataOutputStream writer = new DataOutputStream(new BufferedOutputStream(clientSocket.getOutputStream()))) {
+        try {
+            // הגדרת ערוצי קריאה וכתיבה (בדיוק לפי ההוראות במסמך הדרישות)
+            Scanner reader = new Scanner(new InputStreamReader(clientSocket.getInputStream()));
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true);
 
-            // 1. קריאת ה-JSON מהלקוח (בפורמט UTF)
-            String requestJson = reader.readUTF();  /******CHECK THIS LINE********/
-            System.out.println("HandleRequest: Received JSON: " + requestJson);
+            if (reader.hasNextLine()) {
+                String requestJson = reader.nextLine();
+                System.out.println("HandleRequest: Received JSON: " + requestJson);
 
-            // 2. פיענוח ה-JSON למפה (Map) בעזרת GSON
-            Map<String, Object> requestMap = gson.fromJson(requestJson, new TypeToken<Map<String, Object>>(){}.getType());
+                // 1. חילוץ ה-action מה-Headers
+                Type mapType = new TypeToken<Map<String, Object>>(){}.getType();
+                Map<String, Object> requestMap = gson.fromJson(requestJson, mapType);
+                Map<String, String> headers = (Map<String, String>) requestMap.get("headers");
 
-            // שליפת ה-headers וה-body
-            Map<String, String> headers = (Map<String, String>) requestMap.get("headers");
-            String action = (headers != null) ? headers.get("action") : "";
-            Object body = requestMap.get("body");
+                String action = headers.get("action"); // לדוגמה: "customer/save"
 
-            // 3. לוגיקת הטיפול בבקשה
-            Map<String, Object> responseMap = new HashMap<>();
+                // 2. הכנת אובייקט התשובה הכללי
+                Response<Object> response = new Response<>();
+                Map<String, String> responseHeaders = new HashMap<>();
+                responseHeaders.put("action", action);
+                response.setHeaders(responseHeaders);
 
-            if ("calculatePath".equals(action)) {
-                // כאן תחברו בהמשך את ה-OrderAndDeliveryService שלכם
-                responseMap.put("status", "success");
-                responseMap.put("data", "Shortest path calculated successfully");
-            } else if ("ping".equals(action)) {
-                responseMap.put("status", "success");
-                responseMap.put("message", "pong");
-            } else {
-                responseMap.put("status", "error");
-                responseMap.put("message", "Unknown action: " + action);
+                // 3. ניתוב הבקשה (שימוש ב-Factory Pattern!)
+                try {
+                    String[] parts = action.split("/");
+                    String domain = parts[0]; // customer / product / order / delivery
+                    String command = parts[1]; // save / delete / get / find
+
+                    // ===== כאן מתבצעת הקריאה ל-Factory! =====
+                    Object rawController = ControllerFactory.getInstance().getController(domain);
+
+                    if (rawController == null) {
+                        response.setBody("Error: Unknown domain (" + domain + ").");
+                    } else {
+                        switch (domain) {
+                            case "customer":
+                                CustomerController customerController = (CustomerController) rawController;
+                                if (command.equals("save")) {
+                                    Type reqType = new TypeToken<Request<Customer>>(){}.getType();
+                                    Request<Customer> req = gson.fromJson(requestJson, reqType);
+                                    customerController.saveCustomer(req.getBody());
+                                    response.setBody("Customer saved successfully.");
+                                } else if (command.equals("delete")) {
+                                    Type reqType = new TypeToken<Request<Customer>>(){}.getType();
+                                    Request<Customer> req = gson.fromJson(requestJson, reqType);
+                                    customerController.deleteCustomer(req.getBody());
+                                    response.setBody("Customer deleted successfully.");
+                                } else if (command.equals("get")) {
+                                    response.setBody(customerController.getAllCustomers());
+                                } else if (command.equals("find")) {
+                                    Type reqType = new TypeToken<Request<Customer>>(){}.getType();
+                                    Request<Customer> req = gson.fromJson(requestJson, reqType);
+                                    Customer found = customerController.getCustomer(req.getBody().getCustomerId());
+                                    response.setBody(found);
+                                }
+                                break;
+
+                            case "product":
+                                ProductController productController = (ProductController) rawController;
+                                if (command.equals("save")) {
+                                    Type reqType = new TypeToken<Request<Product>>(){}.getType();
+                                    Request<Product> req = gson.fromJson(requestJson, reqType);
+                                    productController.saveProduct(req.getBody());
+                                    response.setBody("Product saved successfully.");
+                                } else if (command.equals("delete")) {
+                                    Type reqType = new TypeToken<Request<Product>>(){}.getType();
+                                    Request<Product> req = gson.fromJson(requestJson, reqType);
+                                    productController.deleteProduct(req.getBody());
+                                    response.setBody("Product deleted successfully.");
+                                } else if (command.equals("get")) {
+                                    response.setBody(productController.getAllProducts());
+                                } else if (command.equals("find")) {
+                                    Type reqType = new TypeToken<Request<Product>>(){}.getType();
+                                    Request<Product> req = gson.fromJson(requestJson, reqType);
+                                    Product found = productController.getProduct(req.getBody().getProductCode());
+                                    response.setBody(found);
+                                }
+                                break;
+
+                            case "order":
+                                OrderController orderController = (OrderController) rawController;
+                                if (command.equals("save")) {
+                                    Type reqType = new TypeToken<Request<Order>>(){}.getType();
+                                    Request<Order> req = gson.fromJson(requestJson, reqType);
+                                    orderController.saveOrder(req.getBody());
+                                    response.setBody("Order saved successfully.");
+                                } else if (command.equals("delete")) {
+                                    Type reqType = new TypeToken<Request<Order>>(){}.getType();
+                                    Request<Order> req = gson.fromJson(requestJson, reqType);
+                                    orderController.deleteOrder(req.getBody());
+                                    response.setBody("Order deleted successfully.");
+                                } else if (command.equals("get")) {
+                                    response.setBody(orderController.getAllOrders());
+                                } else if (command.equals("find")) {
+                                    Type reqType = new TypeToken<Request<Order>>(){}.getType();
+                                    Request<Order> req = gson.fromJson(requestJson, reqType);
+                                    Order found = orderController.getOrder(req.getBody().getOrderId());
+                                    response.setBody(found);
+                                }
+                                break;
+
+                            case "delivery":
+                                DeliveryController deliveryController = (DeliveryController) rawController;
+                                if (command.equals("save")) {
+                                    Type reqType = new TypeToken<Request<Delivery>>(){}.getType();
+                                    Request<Delivery> req = gson.fromJson(requestJson, reqType);
+                                    deliveryController.saveDelivery(req.getBody());
+                                    response.setBody("Delivery saved successfully.");
+                                } else if (command.equals("delete")) {
+                                    Type reqType = new TypeToken<Request<Delivery>>(){}.getType();
+                                    Request<Delivery> req = gson.fromJson(requestJson, reqType);
+                                    deliveryController.deleteDelivery(req.getBody());
+                                    response.setBody("Delivery deleted successfully.");
+                                } else if (command.equals("get")) {
+                                    response.setBody(deliveryController.getAllDeliveries());
+                                } else if (command.equals("find")) {
+                                    Type reqType = new TypeToken<Request<Delivery>>(){}.getType();
+                                    Request<Delivery> req = gson.fromJson(requestJson, reqType);
+                                    Delivery found = deliveryController.getDelivery(req.getBody().getDeliveryOrder().getOrderId());
+                                    response.setBody(found);
+                                }
+                                break;
+                        }
+                    }
+
+                } catch (Exception e) {
+                    response.setBody("Error processing request: " + e.getMessage());
+                }
+
+                // 4. המרת התשובה בחזרה ל-JSON ושליחה ללקוח
+                String responseJson = gson.toJson(response);
+                writer.println(responseJson);
             }
-
-            // 4. הפיכת התשובה ל-JSON ושליחה חזרה ב-writeUTF
-            String responseJson = gson.toJson(responseMap);
-            writer.writeUTF(responseJson);  /*********CHECK THIS LINE*********/
-            writer.flush(); // מוודא שהמידע יוצא מהבאפר לרשת
 
         } catch (IOException e) {
             System.err.println("HandleRequest Error: " + e.getMessage());
         } finally {
-            // סגירת ה-Socket בסיום הטיפול
             try {
                 if (clientSocket != null && !clientSocket.isClosed()) {
                     clientSocket.close();
@@ -66,6 +169,5 @@ public class HandleRequest implements Runnable {
                 e.printStackTrace();
             }
         }
-
     }
 }

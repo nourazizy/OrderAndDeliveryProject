@@ -1,4 +1,33 @@
 package main.java.com.hit.server;
 
-public class Request {
+import java.util.Map;
+
+public class Request<T> {
+    private Map<String, String> headers;
+    private T body;
+
+    public Request() {}
+
+    public Request(Map<String, String> headers, T body) {
+        this.headers = headers;
+        this.body = body;
+    }
+
+    // Getters
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+
+    public T getBody() {
+        return body;
+    }
+
+    // Setters
+    public void setHeaders(Map<String, String> headers) {
+        this.headers = headers;
+    }
+
+    public void setBody(T body) {
+        this.body = body;
+    }
 }
